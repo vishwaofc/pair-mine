@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tharusha md - Session</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --glass: rgba(255, 255, 255, 0.12);
+      --glass-border: rgba(255, 255, 255, 0.2);
+      --text: #ffffff;
+      --accent: #00d2ff;
+    }
+
+    /* --- Page Pre-loader --- */
+    #preloader {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+
+    .loader-dots {
+      width: 50px;
+      aspect-ratio: 1;
+      display: grid;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg at 50% 50%, #0000 25%, var(--accent) 0 50%, #0000 0 75%, #ffffff 0);
+      animation: s2 1s infinite linear;
+    }
+    .loader-dots::before,
+    .loader-dots::after {
+      content: "";
+      grid-area: 1/1;
+      margin: 15%;
+      border-radius: 50%;
+      background: inherit;
+      animation: inherit;
+    }
+    .loader-dots::after { margin: 25%; animation-duration: 0.5s; }
+
+    @keyframes s2 { 100% { transform: rotate(1turn); } }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+    body {
+      background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .glass-card {
+      width: 100%;
+      max-width: 450px;
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 30px;
+      padding: 40px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+      color: var(--text);
+      text-align: center;
+      position: relative;
+    }
+
+    .logo {
+      width: 70px;
+      height: 70px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px;
+      font-size: 28px;
+      /*transform: rotate(-10deg);*/
+      transition: 0.5s;
+    }
+    .logo:hover { transform: rotate(0deg) scale(1.1); }
+
+    .title { font-weight: 700; font-size: 24px; margin-bottom: 5px; text-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+    .subtitle { font-size: 13px; opacity: 0.8; margin-bottom: 25px; }
+
+    /* Social Icons */
+    .social-icons { display: flex; justify-content: center; gap: 12px; margin-bottom: 25px; }
+    .social-icons a {
+      color: white; font-size: 18px; width: 40px; height: 40px;
+      background: rgba(255,255,255,0.05);
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 12px; border: 1px solid var(--glass-border);
+      transition: 0.3s; text-decoration: none;
+    }
+    .social-icons a:hover { background: var(--accent); transform: translateY(-3px); }
+
+    /* Buttons & Toggles */
+    .toggle-bar {
+      display: flex; background: rgba(0, 0, 0, 0.2);
+      border-radius: 15px; padding: 5px; margin-bottom: 25px;
+    }
+    .toggle-opt {
+      flex: 1; padding: 12px; cursor: pointer; border-radius: 10px;
+      font-size: 14px; font-weight: 600; transition: 0.3s;
+    }
+    .toggle-opt.active { background: white; color: #111; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+
+    .input-box {
+      width: 100%; padding: 15px; background: rgba(0,0,0,0.2);
+      border: 1px solid var(--glass-border); border-radius: 12px;
+      color: white; outline: none; margin-bottom: 15px; /*text-align: center;*/
+      font-size: 16px;
+    }
+    
+    .input-box:hover {
+        border: 1px solid var(--text);
+        color: var(--text);
+    }
+
+    .main-btn {
+      width: 100%; padding: 15px; background: #ffffff;
+      color: #111; border: none; border-radius: 17px;
+      font-weight: 700; cursor: pointer; transition: 0.3s;
+    }
+    .main-btn:hover { background: var(--accent); color: white; transform: scale(1.02); }
+
+    /* --- Loading Animation for result --- */
+    .loading-container {
+      display: none;
+      padding: 20px;
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+    }
+    .pulse-loader {
+      width: 40px; height: 40px;
+      border: 3px solid var(--accent);
+      border-bottom-color: transparent;
+      border-radius: 50%;
+      animation: rotation 1s linear infinite;
+    }
+    @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    .display-area {
+      margin-top: 20px; padding: 15px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 15px; border: 1px solid var(--glass-border);
+      min-height: 40px; display: flex; align-items: center; justify-content: center;
+    }
+
+    .qr-img { width: 100%; max-width: 180px; border-radius: 10px; border: 4px solid white; margin-bottom: 10px; }
+
+    .copy-btn {
+      margin-top: 15px; background: rgba(255,255,255,0.1);
+      color: white; border: 1px solid var(--glass-border);
+      padding: 10px 25px; border-radius: 10px; cursor: pointer;
+    }
+    .footer { margin-top: 25px; font-size: 11px; opacity: 0.5; }
+  </style>
+</head>
+<body>
+
+<!--  <div id="preloader">
+    <div class="loader-dots"></div>
+  </div>-->
+
+  <div class="glass-card">
+    <div class="logo"><i class="fas fa-robot"></i></div>
+    <h1 class="title">THARUSHA-MD</h1>
+    <p class="subtitle">Link your whatsapp</p>
+
+    <div class="social-icons">
+      <a href="#"><i class="fab fa-youtube"></i></a>
+      <a href="#"><i class="fab fa-telegram"></i></a>
+      <a href="#"><i class="fab fa-whatsapp"></i></a>
+      <a href="#"><i class="fab fa-github"></i></a>
+    </div>
+
+    <div class="toggle-bar">
+      <div class="toggle-opt active" id="pairMode">Pair Code</div>
+      <div class="toggle-opt" id="qrMode">QR Code</div>
+    </div>
+
+    <div id="pairFields">
+      <input type="number" id="mobileNumber" class="input-box" placeholder="947xxxxxxxx">
+      <button class="main-btn" id="submitBtn">Generate Pair Code</button>
+    </div>
+
+    <div class="loading-container" id="loading">
+      <div class="pulse-loader"></div>
+      <p style="font-size: 12px; margin-top: 10px; color: var(--accent);">Please Wait...</p>
+    </div>
+
+    <div class="display-area" id="resultArea">
+      <span style="opacity: 0.5;">Waiting for request...</span>
+    </div>
+
+    <button class="copy-btn" onclick="copyResult()"><i class="fas fa-copy"></i> Copy pair code</button>
+
+    <div class="footer">
+      &copy; 2026 Tharusha Sandipa. All rights reserved.
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
+  <script>
+    const resultArea = document.getElementById('resultArea');
+    const loading = document.getElementById('loading');
+    const preloader = document.getElementById('preloader');
+
+    // Remove preloader when page is ready
+    window.onload = () => {
+      setTimeout(() => {
+        preloader.style.opacity = '0';
+        setTimeout(() => preloader.style.display = 'none', 500);
+      }, 1000);
+    };
+
+    document.getElementById('pairMode').onclick = function() {
+      this.classList.add('active');
+      document.getElementById('qrMode').classList.remove('active');
+      document.getElementById('pairFields').style.display = 'block';
+      resultArea.innerHTML = '<span style="opacity: 0.5;">Waiting for request...</span>';
+    }
+
+    document.getElementById('qrMode').onclick = function() {
+      this.classList.add('active');
+      document.getElementById('pairMode').classList.remove('active');
+      document.getElementById('pairFields').style.display = 'none';
+      generateQR();
+    }
+
+    async function generateQR() {
+      loading.style.display = 'flex';
+      resultArea.style.display = 'none';
+      try {
+        const res = await axios('/qr');
+        resultArea.innerHTML = `<div style="text-align:center"><img src="${res.data.qr}" class="qr-img"><br><small>Scan with WhatsApp Linked Devices</small></div>`;
+      } catch (e) { resultArea.innerHTML = '<span style="color:#ff4d4d">Error loading QR code</span>'; }
+      loading.style.display = 'none';
+      resultArea.style.display = 'flex';
+    }
+
+    document.getElementById('submitBtn').onclick = async function() {
+      const num = document.getElementById('mobileNumber').value;
+      if(!num) return alert("Please enter your number!");
+      
+      loading.style.display = 'flex';
+      resultArea.style.display = 'none';
+
+      try {
+        const res = await axios(`/pair?number=${num.replace(/[^0-9]/g, "")}`);
+        resultArea.innerHTML = res.data.code ? `<h2 style="color:var(--accent); font-size:18px;">${res.data.code}</h2>` : 'Error!';
+      } catch (e) { resultArea.innerHTML = '<span style="color:#ff4d4d">Failed to generate code</span>'; }
+      
+      loading.style.display = 'none';
+      resultArea.style.display = 'flex';
+    }
+
+    function copyResult() {
+      const text = resultArea.innerText;
+      if(text.includes('Waiting')) return;
+      navigator.clipboard.writeText(text);
+      alert("Pair code copied!");
+    }
+  </script>
+</body>
+</html>
